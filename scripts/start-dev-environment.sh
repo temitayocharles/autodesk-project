@@ -6,8 +6,10 @@ set -e
 echo "🚀 Starting AEC Data Infrastructure Platform..."
 echo ""
 
-PROJECT_ROOT="/Users/charlie/Desktop/autodesk-project"
-cd "$PROJECT_ROOT/infrastructure/docker-compose"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
+COMPOSE_DIR="$PROJECT_ROOT/infrastructure/docker-compose"
+cd "$COMPOSE_DIR"
 
 # Check if .env exists
 if [ ! -f .env ]; then
@@ -32,14 +34,14 @@ if ! docker ps &> /dev/null; then
     exit 1
 fi
 
-echo "📦 Building services..."
-cd "$PROJECT_ROOT"
-./scripts/build-all.sh
-
-echo ""
 echo "🐳 Starting Docker Compose services..."
-cd "$PROJECT_ROOT/infrastructure/docker-compose"
-docker-compose up -d
+if [ "${USE_LOCAL_IMAGES:-}" = "1" ]; then
+    echo "Using local images (docker-compose.local.yml)"
+    docker-compose -f "$COMPOSE_DIR/docker-compose.yml" -f "$COMPOSE_DIR/docker-compose.local.yml" up -d --build
+else
+    docker-compose pull
+    docker-compose up -d
+fi
 
 echo ""
 echo "⏳ Waiting for services to be ready..."

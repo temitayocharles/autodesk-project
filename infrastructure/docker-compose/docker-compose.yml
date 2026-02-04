@@ -56,9 +56,7 @@ services:
 
   # Data Ingestion Service (Python/FastAPI)
   data-ingestion-service:
-    build:
-      context: ../../services/data-ingestion-service
-      dockerfile: Dockerfile
+    image: ghcr.io/temitayocharles/autodesk-project/data-ingestion-service:main
     container_name: data-ingestion-service
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/aec_data
@@ -77,9 +75,7 @@ services:
 
   # Data Processing Service (Go)
   data-processing-service:
-    build:
-      context: ../../services/data-processing-service
-      dockerfile: Dockerfile
+    image: ghcr.io/temitayocharles/autodesk-project/data-processing-service:main
     container_name: data-processing-service
     environment:
       RABBITMQ_URL: amqp://guest:guest@rabbitmq:5672/
@@ -98,9 +94,7 @@ services:
 
   # Data API Service (Python/Flask)
   data-api-service:
-    build:
-      context: ../../services/data-api-service
-      dockerfile: Dockerfile
+    image: ghcr.io/temitayocharles/autodesk-project/data-api-service:main
     container_name: data-api-service
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/aec_data

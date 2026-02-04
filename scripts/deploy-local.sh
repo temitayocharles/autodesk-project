@@ -6,7 +6,8 @@ set -e
 echo "🚀 Deploying AEC Data Platform to Kubernetes..."
 echo ""
 
-PROJECT_ROOT="/Users/charlie/Desktop/autodesk-project"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Check if kubectl is configured
 if ! kubectl cluster-info &> /dev/null; then
@@ -33,7 +34,11 @@ kubectl apply -f rabbitmq-deployment.yaml
 kubectl apply -f data-ingestion-deployment.yaml
 kubectl apply -f data-processing-deployment.yaml
 kubectl apply -f data-api-deployment.yaml
-kubectl apply -f nginx-ingress.yaml
+if [ -f nginx-ingress.yaml ]; then
+    kubectl apply -f nginx-ingress.yaml
+else
+    echo "⚠️  nginx-ingress.yaml not found; skipping ingress setup"
+fi
 
 echo ""
 echo "⏳ Waiting for deployments to be ready..."

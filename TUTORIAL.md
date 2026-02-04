@@ -4,6 +4,8 @@
 
 Welcome to your comprehensive DevOps learning journey! This tutorial will guide you through building an enterprise-grade AEC Data Infrastructure platform from scratch. By the end, you'll have hands-on experience with all the technologies and practices mentioned in the Autodesk Senior DevOps Developer job description.
 
+**Reality check for this repo:** The Docker Compose stack, Kubernetes manifests, CI/CD configs, and services are implemented. Advanced sections (Terraform/Ansible/Vault/Helm, etc.) are conceptual unless files exist in the repo. For a guaranteed working run, follow `GETTING-STARTED.md`.
+
 ---
 
 ## 📅 PHASE 1: Environment Setup & Verification (Day 1)
@@ -84,26 +86,27 @@ aws s3 mb s3://aec-data-local-$(date +%s)
 
 **Note:** Save your bucket name! You'll need it later.
 
-### Step 1.4: Create Project Directory Structure
+### Step 1.4: Verify Project Structure
 
-Now let's create the complete project structure:
+This repo already contains the working structure. Verify it looks like this:
 
 ```bash
 cd /Users/charlie/Desktop/autodesk-project
-
-# Create directory structure
-mkdir -p services/{data-ingestion-service,data-processing-service,data-api-service}
-mkdir -p infrastructure/{terraform,ansible,docker-compose}
-mkdir -p kubernetes/{manifests,helm-charts}
-mkdir -p ci-cd/{jenkins,scripts}
-mkdir -p monitoring/{prometheus,grafana,loki}
-mkdir -p security/{vault,policies}
-mkdir -p scripts
-mkdir -p docs/{architecture,runbooks,troubleshooting}
-mkdir -p tests/{load-tests,e2e-tests}
+ls
 ```
 
-**Checkpoint:** Verify the structure with `tree -L 2` or `ls -R`
+Expected top-level folders:
+
+```
+ci-cd/
+docs/
+infrastructure/
+kubernetes/
+scripts/
+services/
+```
+
+**Checkpoint:** If you're starting from scratch, use the current repo as the source of truth instead of creating extra folders that don't exist here.
 
 ---
 

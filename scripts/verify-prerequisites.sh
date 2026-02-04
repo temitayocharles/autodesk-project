@@ -6,56 +6,68 @@ set -e
 echo "🔍 Verifying prerequisites for AEC Data Infrastructure Project..."
 echo ""
 
-MISSING=()
+MISSING_REQUIRED=()
+MISSING_OPTIONAL=()
 
 # Function to check command
 check_command() {
-    if command -v "$1" &> /dev/null; then
-        VERSION=$($1 $2 2>&1 | head -n 1)
-        echo "✅ $3: $VERSION"
+    local cmd="$1"
+    local args="$2"
+    local label="$3"
+    local required="$4"
+
+    if command -v "$cmd" &> /dev/null; then
+        VERSION=$($cmd $args 2>&1 | head -n 1)
+        echo "✅ $label: $VERSION"
     else
-        echo "❌ $3 is not installed"
-        MISSING+=("$3")
+        if [ "$required" = "required" ]; then
+            echo "❌ $label is not installed (required)"
+            MISSING_REQUIRED+=("$label")
+        else
+            echo "⚠️  $label is not installed (optional)"
+            MISSING_OPTIONAL+=("$label")
+        fi
     fi
 }
 
-# Check Docker
-echo "--- Container & Orchestration ---"
-check_command "docker" "--version" "Docker"
-check_command "docker-compose" "--version" "Docker Compose"
-check_command "kubectl" "version --client --short" "kubectl"
-check_command "helm" "version --short" "Helm"
-check_command "minikube" "version --short" "Minikube"
+# Required for running the platform via Docker Compose
+echo "--- Core Requirements ---"
+check_command "docker" "--version" "Docker" "required"
+check_command "docker-compose" "--version" "Docker Compose" "required"
+check_command "aws" "--version" "AWS CLI" "required"
+check_command "jq" "--version" "jq" "required"
+check_command "git" "--version" "Git" "required"
 
 echo ""
-echo "--- Programming Languages ---"
-check_command "python3" "--version" "Python"
-check_command "go" "version" "Go"
-check_command "node" "--version" "Node.js"
-check_command "npm" "--version" "npm"
+echo "--- Optional (Local Development) ---"
+check_command "python3" "--version" "Python" "optional"
+check_command "go" "version" "Go" "optional"
+check_command "node" "--version" "Node.js" "optional"
+check_command "npm" "--version" "npm" "optional"
 
 echo ""
-echo "--- Infrastructure Tools ---"
-check_command "terraform" "--version" "Terraform"
-check_command "ansible" "--version" "Ansible"
-check_command "vault" "--version" "HashiCorp Vault"
+echo "--- Optional (Kubernetes & IaC) ---"
+check_command "kubectl" "version --client --short" "kubectl" "optional"
+check_command "helm" "version --short" "Helm" "optional"
+check_command "minikube" "version --short" "Minikube" "optional"
+check_command "terraform" "--version" "Terraform" "optional"
+check_command "ansible" "--version" "Ansible" "optional"
+check_command "vault" "--version" "HashiCorp Vault" "optional"
+check_command "yq" "--version" "yq" "optional"
+check_command "k9s" "version" "k9s" "optional"
 
 echo ""
-echo "--- CI/CD ---"
-if brew services list | grep -q jenkins-lts; then
-    echo "✅ Jenkins (installed via Homebrew)"
+echo "--- Optional (CI/CD Tools) ---"
+if command -v brew &> /dev/null; then
+    if brew services list | grep -q jenkins-lts; then
+        echo "✅ Jenkins (installed via Homebrew)"
+    else
+        echo "⚠️  Jenkins is not installed (optional)"
+        MISSING_OPTIONAL+=("Jenkins")
+    fi
 else
-    echo "❌ Jenkins is not installed"
-    MISSING+=("Jenkins")
+    echo "⚠️  Homebrew not detected; skipping Jenkins check (optional)"
 fi
-
-echo ""
-echo "--- Cloud & Utilities ---"
-check_command "aws" "--version" "AWS CLI"
-check_command "jq" "--version" "jq"
-check_command "yq" "--version" "yq"
-check_command "k9s" "version" "k9s"
-check_command "git" "--version" "Git"
 
 echo ""
 echo "--- Checking Docker Status ---"
@@ -64,17 +76,21 @@ if docker ps &> /dev/null; then
 else
     echo "❌ Docker daemon is not running"
     echo "   Please start Docker Desktop"
-    MISSING+=("Docker daemon")
+    MISSING_REQUIRED+=("Docker daemon")
 fi
 
 echo ""
 echo "--- Checking Kubernetes ---"
-if kubectl cluster-info &> /dev/null; then
-    echo "✅ Kubernetes cluster is accessible"
-    kubectl get nodes
+if command -v kubectl &> /dev/null; then
+    if kubectl cluster-info &> /dev/null; then
+        echo "✅ Kubernetes cluster is accessible"
+        kubectl get nodes
+    else
+        echo "⚠️  Kubernetes cluster not accessible (optional)"
+        echo "   Enable Kubernetes in Docker Desktop settings if you plan to run ./scripts/deploy-local.sh"
+    fi
 else
-    echo "⚠️  Kubernetes cluster not accessible"
-    echo "   Enable Kubernetes in Docker Desktop settings"
+    echo "⚠️  kubectl not installed (optional)"
 fi
 
 echo ""
@@ -93,18 +109,25 @@ fi
 
 echo ""
 echo "=================================================="
-if [ ${#MISSING[@]} -eq 0 ]; then
-    echo "✅ All prerequisites are installed!"
+if [ ${#MISSING_REQUIRED[@]} -eq 0 ]; then
+    echo "✅ Required prerequisites are installed!"
     echo ""
     echo "Next steps:"
     echo "1. Configure AWS: aws configure"
     echo "2. Copy .env file: cp infrastructure/docker-compose/.env.example infrastructure/docker-compose/.env"
     echo "3. Edit .env with your AWS credentials and S3 bucket name"
     echo "4. Start services: cd infrastructure/docker-compose && docker-compose up -d"
+    if [ ${#MISSING_OPTIONAL[@]} -ne 0 ]; then
+        echo ""
+        echo "Optional tools not installed:"
+        for item in "${MISSING_OPTIONAL[@]}"; do
+            echo "   - $item"
+        done
+    fi
     exit 0
 else
-    echo "❌ Missing prerequisites:"
-    for item in "${MISSING[@]}"; do
+    echo "❌ Missing required prerequisites:"
+    for item in "${MISSING_REQUIRED[@]}"; do
         echo "   - $item"
     done
     echo ""

@@ -6,7 +6,8 @@ set -e
 echo "🔨 Building all Docker images..."
 echo ""
 
-PROJECT_ROOT="/Users/charlie/Desktop/autodesk-project"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 # Colors
 GREEN='\033[0;32m'

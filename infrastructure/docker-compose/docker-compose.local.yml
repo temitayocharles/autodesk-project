@@ -1,0 +1,17 @@
+version: '3.8'
+
+services:
+  data-ingestion-service:
+    build:
+      context: ../../services/data-ingestion-service
+    image: data-ingestion-service:latest
+
+  data-processing-service:
+    build:
+      context: ../../services/data-processing-service
+    image: data-processing-service:latest
+
+  data-api-service:
+    build:
+      context: ../../services/data-api-service
+    image: data-api-service:latest

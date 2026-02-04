@@ -7,7 +7,9 @@ Welcome! This guide will walk you through your first steps with the AEC Data Inf
 Open your terminal and navigate to the project directory:
 
 ```bash
-cd /Users/charlie/Desktop/autodesk-project
+cd /path/to/autodesk-project
+# Or, if this repo has a .git directory:
+# cd "$(git rev-parse --show-toplevel)"
 ```
 
 Make the scripts executable:
@@ -103,38 +105,41 @@ docker ps
 
 You should see an empty table (no errors).
 
-## Step 4: Build and Start Services (15 minutes)
+## Step 4: Pull and Start Services (5 minutes)
 
-Now the exciting part! Let's build and start everything.
-
-```bash
-cd /Users/charlie/Desktop/autodesk-project
-
-# This script builds all Docker images
-./scripts/build-all.sh
-```
-
-**What's happening?**
-- Building Data Ingestion Service (Python/FastAPI)
-- Building Data Processing Service (Go)
-- Building Data API Service (Python/Flask)
-
-This will take 5-10 minutes on first run (it downloads dependencies).
-
-Once complete, start all services:
+Now the exciting part! Let's pull the pre-built images and start everything.
 
 ```bash
+cd /path/to/autodesk-project
+
+# This script pulls images from GitHub Container Registry and starts services
 ./scripts/start-dev-environment.sh
 ```
 
 **What's happening?**
-- Starting PostgreSQL database
-- Starting Redis cache
-- Starting RabbitMQ message queue
-- Starting your 3 microservices
-- Starting Nginx as API gateway
-- Starting Prometheus for metrics
-- Starting Grafana for dashboards
+- Pulling Data Ingestion Service from ghcr.io (Python/FastAPI)
+- Pulling Data Processing Service from ghcr.io (Go)
+- Pulling Data API Service from ghcr.io (Python/Flask)
+- Starting all infrastructure services
+
+**Note:** Images are pre-built by GitHub Actions and hosted at `ghcr.io/temitayocharles/autodesk-project/*`
+
+**Want to build locally instead?** Use the local compose override:
+
+```bash
+USE_LOCAL_IMAGES=1 ./scripts/start-dev-environment.sh
+```
+
+This uses `infrastructure/docker-compose/docker-compose.local.yml` to build from source.
+
+**What's happening?**
+- Pulling/Starting PostgreSQL database
+- Pulling/Starting Redis cache
+- Pulling/Starting RabbitMQ message queue
+- Pulling/Starting your 3 microservices from GitHub Container Registry
+- Pulling/Starting Nginx as API gateway
+- Pulling/Starting Prometheus for metrics
+- Pulling/Starting Grafana for dashboards
 
 ## Step 5: Verify Everything is Running (5 minutes)
 
@@ -150,7 +155,7 @@ You should see all services as "Up" or "running".
 ### Test the services:
 
 ```bash
-cd /Users/charlie/Desktop/autodesk-project
+cd /path/to/autodesk-project
 ./scripts/test-services.sh
 ```
 
@@ -252,7 +257,7 @@ Go to **Grafana** (http://localhost:3000):
 See what's happening inside your services:
 
 ```bash
-cd /Users/charlie/Desktop/autodesk-project/infrastructure/docker-compose
+cd /path/to/autodesk-project/infrastructure/docker-compose
 
 # All logs
 docker-compose logs

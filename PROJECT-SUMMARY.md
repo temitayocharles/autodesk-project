@@ -7,12 +7,9 @@ Congratulations! You've created a **production-grade, enterprise-level DevOps pr
 ## 📊 Project Statistics
 
 - **3 Microservices** (2 languages: Python, Go)
-- **8 Infrastructure Components** (PostgreSQL, Redis, RabbitMQ, Nginx, Prometheus, Grafana, Loki, Vault)
-- **20+ Docker Containers**
-- **50+ Kubernetes Resources**
-- **Complete CI/CD Pipeline**
-- **Full Observability Stack**
-- **Security Best Practices**
+- **7 Infrastructure Components (Docker Compose)**: PostgreSQL, Redis, RabbitMQ, Nginx, Prometheus, Grafana, Loki
+- **Kubernetes Manifests** for core services (deployments, services, config, secrets)
+- **CI/CD Configurations**: Jenkins, GitHub Actions, ArgoCD (docs + config)
 - **~5,000 lines of code**
 
 ## 🎓 Skills Demonstrated
@@ -23,16 +20,13 @@ Congratulations! You've created a **production-grade, enterprise-level DevOps pr
 |----------------|------------------------|
 | **Strong programming skills (Python, Go, Java)** | Built 3 microservices in Python and Go with production patterns |
 | **Shell scripting** | Created automation scripts for build, deploy, test, cleanup |
-| **CI/CD pipelines** | Three different implementations: Jenkins (enterprise), GitHub Actions (cloud-native), ArgoCD (GitOps) |
-| **DevOps best practices** | Infrastructure as Code, containers, orchestration, monitoring |
-| **Cloud Networking** | Service mesh, load balancing, ingress configuration |
-| **Security (IAM, secrets management)** | HashiCorp Vault, RBAC, network policies, container scanning |
-| **Kubernetes/ECS** | Complete K8s deployment with pods, services, ingress, autoscaling |
-| **Configuration management (Terraform, Ansible)** | IaC for infrastructure automation |
+| **CI/CD pipelines** | Jenkins (enterprise), GitHub Actions (cloud-native), ArgoCD (GitOps) |
+| **DevOps best practices** | Containers, orchestration, monitoring, automation scripts |
+| **Kubernetes/ECS** | Kubernetes manifests for core services |
 | **AWS production experience** | S3 integration for file storage |
 | **Problem-solving skills** | Architected distributed system solving real-world problems |
 | **Docker containerization** | Multi-stage Dockerfiles, optimization, security |
-| **Observability tools (Datadog, Dynatrace, New Relic)** | Prometheus, Grafana, Loki stack |
+| **Observability tools (Datadog, Dynatrace, New Relic)** | Prometheus, Grafana, Loki stack (local compose) |
 | **SDLC processes, Agile** | Git workflow, pipeline stages, incremental development |
 
 ### 🌟 Additional Skills Demonstrated
@@ -41,8 +35,8 @@ Congratulations! You've created a **production-grade, enterprise-level DevOps pr
 - **Database Management** - PostgreSQL with migrations, indexes, queries
 - **Caching Strategies** - Redis for API response caching
 - **Message Queues** - RabbitMQ for asynchronous processing
-- **Load Balancing** - Nginx as reverse proxy and API gateway
-- **Health Checks** - Liveness and readiness probes
+- **Load Balancing** - Nginx as reverse proxy and API gateway (Docker Compose)
+- **Health Checks** - Liveness and readiness endpoints
 - **Structured Logging** - JSON logging for parsing and analysis
 - **Metrics Collection** - Prometheus instrumentation
 - **Performance Optimization** - Multi-stage builds, connection pooling
@@ -53,39 +47,32 @@ Congratulations! You've created a **production-grade, enterprise-level DevOps pr
 ```
 autodesk-project/
 ├── README.md                      # Project overview
+├── START-HERE.md                  # Orientation and reading order
+├── GETTING-STARTED.md             # Quick start guide
 ├── TUTORIAL.md                    # Step-by-step guide
-├── GETTING-STARTED.md            # Quick start guide
+├── PROJECT-SUMMARY.md             # Summary and roadmap
 ├── services/                      # Microservices
-│   ├── data-ingestion-service/   # Python/FastAPI - File uploads
-│   ├── data-processing-service/  # Go - Async processing
-│   └── data-api-service/         # Python/Flask - REST API
-├── infrastructure/                # Infrastructure as Code
-│   ├── docker-compose/           # Local development
-│   ├── terraform/                # Infrastructure provisioning
-│   └── ansible/                  # Configuration management
-├── kubernetes/                    # Kubernetes manifests
-│   ├── manifests/                # YAML files
-│   └── helm-charts/              # Helm packages
-├── ci-cd/                        # CI/CD configuration
-│   ├── jenkins/                  # Jenkins pipelines
-│   ├── argocd/                   # GitOps (ArgoCD)
-│   └── .github/workflows/        # GitHub Actions
-├── monitoring/                    # Observability
-│   ├── prometheus/               # Metrics collection
-│   ├── grafana/                  # Visualization
-│   └── loki/                     # Log aggregation
-├── security/                      # Security configurations
-│   └── vault/                    # Secrets management
+│   ├── data-ingestion-service/    # Python/FastAPI - File uploads
+│   ├── data-processing-service/   # Go - Async processing
+│   └── data-api-service/          # Python/Flask - REST API
+├── infrastructure/
+│   └── docker-compose/            # Local development (Compose + configs)
+├── kubernetes/
+│   └── manifests/                 # Kubernetes YAML
+├── ci-cd/
+│   ├── jenkins/                   # Jenkins pipelines
+│   └── argocd/                    # GitOps (ArgoCD)
+├── .github/workflows/             # GitHub Actions
 ├── scripts/                       # Automation scripts
-│   ├── verify-prerequisites.sh   # Check dependencies
-│   ├── build-all.sh             # Build Docker images
-│   ├── start-dev-environment.sh # Start platform
-│   ├── test-services.sh         # Run tests
-│   ├── deploy-local.sh          # Deploy to K8s
-│   └── cleanup.sh               # Cleanup resources
-└── docs/                         # Documentation
-    ├── INTERVIEW-PREP.md        # Interview guide
-    └── architecture/            # Architecture diagrams
+│   ├── verify-prerequisites.sh    # Check dependencies
+│   ├── build-all.sh               # Build Docker images
+│   ├── start-dev-environment.sh   # Start platform
+│   ├── test-services.sh           # Run tests
+│   ├── deploy-local.sh            # Deploy to K8s
+│   └── cleanup.sh                 # Cleanup resources
+└── docs/                          # Documentation
+    ├── INTERVIEW-PREP.md          # Interview guide
+    └── ARCHITECTURE.md            # Architecture summary
 ```
 
 ## 🚀 Quick Start Commands
@@ -102,14 +89,27 @@ cd infrastructure/docker-compose
 cp .env.example .env
 # Edit .env with your AWS credentials
 
-# 4. Build and start
-cd /Users/charlie/Desktop/autodesk-project
-./scripts/build-all.sh
+# 4. Pull images and start (uses GitHub Container Registry)
+cd /path/to/autodesk-project
 ./scripts/start-dev-environment.sh
+
+# Images pulled from: ghcr.io/temitayocharles/autodesk-project/*:main
+# To build locally instead:
+# USE_LOCAL_IMAGES=1 ./scripts/start-dev-environment.sh
 
 # 5. Test
 ./scripts/test-services.sh
 ```
+
+## 🐳 Docker Images
+
+All services are available as pre-built images:
+
+- **Data Ingestion**: `ghcr.io/temitayocharles/autodesk-project/data-ingestion-service:main`
+- **Data Processing**: `ghcr.io/temitayocharles/autodesk-project/data-processing-service:main`
+- **Data API**: `ghcr.io/temitayocharles/autodesk-project/data-api-service:main`
+
+Built automatically by [GitHub Actions](.github/workflows/ci.yml) on every push to main.
 
 ## 🌐 Access URLs
 
@@ -154,16 +154,9 @@ Once running:
 - [ ] Performance tuning
 
 ### Phase 16-18: Security (Days 19-21)
-- [ ] Vault integration
 - [ ] RBAC implementation
 - [ ] Network policies
 - [ ] Compliance checks
-
-### Phase 19-20: Advanced Topics (Days 22-24)
-- [ ] Helm charts
-- [ ] Terraform modules
-- [ ] Ansible playbooks
-- [ ] GitOps setup
 
 ### Phase 21: Production Readiness (Days 25-27)
 - [ ] Load testing
@@ -186,10 +179,10 @@ Once running:
 4. ⏭️ Create Grafana dashboards
 
 ### Next Week:
-1. Implement HashiCorp Vault
-2. Add integration tests
-3. Create Terraform modules
-4. Write Ansible playbooks
+1. Add integration tests
+2. Create Grafana dashboards
+3. Expand Kubernetes manifests (ingress, autoscaling)
+4. Add runbooks
 
 ### Week 3:
 1. Load testing
@@ -248,8 +241,7 @@ Once running:
 - Vulnerability scanning
 
 ### Infrastructure as Code
-- Terraform
-- Ansible
+- Infrastructure as code (planned)
 - Configuration management
 - State management
 - Modules and reusability
@@ -307,7 +299,7 @@ Once running:
 ### Certifications to Consider:
 - AWS Certified DevOps Engineer
 - Certified Kubernetes Administrator (CKA)
-- HashiCorp Terraform Associate
+- HashiCorp Terraform Associate (optional learning)
 - Docker Certified Associate
 
 ## 🤝 Getting Help
@@ -357,5 +349,5 @@ Before your interview:
 ---
 
 *Project created: February 2026*
-*Technologies: Docker, Kubernetes, Python, Go, PostgreSQL, Redis, RabbitMQ, Prometheus, Grafana, Jenkins, Terraform, Ansible, AWS*
+*Technologies: Docker, Kubernetes, Python, Go, PostgreSQL, Redis, RabbitMQ, Prometheus, Grafana, Jenkins, AWS*
 *Purpose: Interview preparation for Autodesk Senior DevOps Developer position*

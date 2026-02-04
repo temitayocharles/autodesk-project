@@ -155,10 +155,23 @@ Each tool has its strengths. I'd choose based on the organization's needs, exist
 ### Try GitHub Actions (5 minutes)
 ```bash
 # Just push to GitHub - it runs automatically!
-git init
 git add .
-git commit -m "Add CI/CD"
+git commit -m "Update project"
 git push origin main
+
+# Images are built and pushed to:
+# ghcr.io/temitayocharles/autodesk-project/data-ingestion-service:main
+# ghcr.io/temitayocharles/autodesk-project/data-processing-service:main
+# ghcr.io/temitayocharles/autodesk-project/data-api-service:main
+```
+
+### Use Pre-built Images (2 minutes)
+```bash
+# All images are now pulled from GitHub Container Registry
+cd /Users/charlie/Desktop/autodesk-project
+./scripts/start-dev-environment.sh
+
+# No local build needed! Images are pre-built by CI/CD
 ```
 
 ### Try ArgoCD (15 minutes)

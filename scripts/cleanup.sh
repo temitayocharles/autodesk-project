@@ -6,7 +6,8 @@ set -e
 echo "🧹 Cleaning up AEC Data Infrastructure Platform..."
 echo ""
 
-PROJECT_ROOT="/Users/charlie/Desktop/autodesk-project"
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 cd "$PROJECT_ROOT/infrastructure/docker-compose"
 
 # Stop and remove containers

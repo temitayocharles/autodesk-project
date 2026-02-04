@@ -79,7 +79,7 @@ You are here → 🎯 Starting Point
 
 ### Step 1: Verify Prerequisites (10 minutes)
 ```bash
-cd /Users/charlie/Desktop/autodesk-project
+cd /path/to/autodesk-project
 ./scripts/verify-prerequisites.sh
 ```
 
@@ -96,11 +96,19 @@ cp .env.example .env
 nano .env  # Add your AWS credentials
 ```
 
-### Step 3: Build and Start (30 minutes)
+### Step 3: Start Services (5 minutes)
 ```bash
-cd /Users/charlie/Desktop/autodesk-project
-./scripts/build-all.sh
+cd /path/to/autodesk-project
 ./scripts/start-dev-environment.sh
+
+# Images are pulled from GitHub Container Registry
+# No build needed - images pre-built by CI/CD!
+```
+
+**Want to build locally?** Use the local compose override:
+
+```bash
+USE_LOCAL_IMAGES=1 ./scripts/start-dev-environment.sh
 ```
 
 ### Step 4: Test It Works! (5 minutes)
@@ -137,21 +145,13 @@ autodesk-project/
 │   └── data-api-service/ (Python/Flask)
 │
 ├── 🏗️ INFRASTRUCTURE (How to Deploy)
-│   ├── docker-compose/ ← Local development
-│   ├── kubernetes/ ← Production-like
-│   ├── terraform/ ← Infrastructure as Code
-│   └── ansible/ ← Configuration management
+│   ├── infrastructure/docker-compose/ ← Local development (Docker Compose)
+│   └── kubernetes/ ← Kubernetes manifests
 │
 ├── 🤖 CI/CD (Automation)
-│   └── jenkins/ ← Build & deploy pipelines
-│
-├── 📊 MONITORING (Observability)
-│   ├── prometheus/ ← Metrics
-│   ├── grafana/ ← Dashboards
-│   └── loki/ ← Logs
-│
-├── 🔒 SECURITY
-│   └── vault/ ← Secrets management
+│   ├── ci-cd/jenkins/ ← Jenkins pipeline + setup docs
+│   ├── ci-cd/argocd/ ← ArgoCD manifest + guide
+│   └── .github/workflows/ ← GitHub Actions workflow
 │
 └── 🛠️ SCRIPTS (Helpful Commands)
     ├── verify-prerequisites.sh ← Check setup
@@ -200,15 +200,14 @@ autodesk-project/
 ### Technologies
 - **Languages:** Python, Go, Shell scripting
 - **Containers:** Docker, multi-stage builds
-- **Orchestration:** Kubernetes, Helm
+- **Orchestration:** Kubernetes (Helm planned)
 - **CI/CD:** Jenkins pipelines
 - **Databases:** PostgreSQL
 - **Caching:** Redis
 - **Message Queues:** RabbitMQ
 - **Monitoring:** Prometheus, Grafana, Loki
-- **IaC:** Terraform, Ansible
 - **Cloud:** AWS S3
-- **Security:** Vault, RBAC, network policies
+- **Security:** RBAC, network policies (planned)
 
 ### Skills
 - Microservices architecture
@@ -331,7 +330,7 @@ You have everything you need:
 
 ### Your First Command:
 ```bash
-cd /Users/charlie/Desktop/autodesk-project
+cd /path/to/autodesk-project
 open GETTING-STARTED.md
 ```
 

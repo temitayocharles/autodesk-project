@@ -6,102 +6,102 @@ This enterprise-grade project simulates the Architecture, Engineering, and Const
 
 ## 📋 Prerequisites
 
-Before starting this project, ensure you have the following installed on your macOS system:
+Before starting this project, ensure you have the following installed on your macOS system.
 
-### Required Software & Tools
+### Core (Required to Run the Platform via Docker Compose)
 
 1. **Docker Desktop** (v4.25+)
    - Install from: https://www.docker.com/products/docker-desktop
    - Includes Docker Engine and Docker Compose
-   - Enable Kubernetes in Docker Desktop settings
+   - Optional: Enable Kubernetes in Docker Desktop settings (only needed for `./scripts/deploy-local.sh`)
 
 2. **Homebrew** (macOS Package Manager)
    ```bash
    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
    ```
 
-3. **Python 3.11+**
+3. **AWS CLI** (for S3 interactions)
    ```bash
-   brew install python@3.11
+   brew install awscli
+   aws configure
    ```
 
-4. **Go 1.21+**
+4. **jq** (JSON processor)
    ```bash
-   brew install go
+   brew install jq
    ```
 
-5. **Node.js 20+ & npm**
-   ```bash
-   brew install node
-   ```
-
-6. **Git**
+5. **Git**
    ```bash
    brew install git
    ```
 
-7. **kubectl** (Kubernetes CLI)
+### Optional (Needed Only for Local Development or Advanced Sections)
+
+6. **Python 3.11+** (only needed if running services locally outside Docker)
+   ```bash
+   brew install python@3.11
+   ```
+
+7. **Go 1.21+** (only needed if running the Go service locally)
+   ```bash
+   brew install go
+   ```
+
+8. **Node.js 20+ & npm** (only needed for tooling or future frontend work)
+   ```bash
+   brew install node
+   ```
+
+9. **kubectl** (Kubernetes CLI; required for `./scripts/deploy-local.sh`)
    ```bash
    brew install kubectl
    ```
 
-8. **Helm** (Kubernetes Package Manager)
-   ```bash
-   brew install helm
-   ```
-
-9. **Terraform** (v1.6+)
-   ```bash
-   brew install terraform
-   ```
-
-10. **Jenkins** (Local Installation) - Optional
+10. **Helm** (Kubernetes Package Manager; optional)
     ```bash
-    brew install jenkins-lts
+    brew install helm
     ```
 
-11. **ArgoCD CLI** (for GitOps) - Optional
+11. **Terraform** (optional; not used in the current repo)
     ```bash
-    brew install argocd
+    brew install terraform
     ```
 
-12. **Ansible**
+12. **Ansible** (optional; not used in the current repo)
     ```bash
     brew install ansible
     ```
 
-12. **AWS CLI** (for S3 interactions)
+13. **Jenkins** (optional; local install for experimentation)
     ```bash
-    brew install awscli
-    aws configure
+    brew install jenkins-lts
     ```
 
-13. **Minikube** (Alternative to Docker Desktop Kubernetes)
+14. **ArgoCD CLI** (optional; for GitOps experimentation)
+    ```bash
+    brew install argocd
+    ```
+
+15. **Minikube** (optional; alternative to Docker Desktop Kubernetes)
     ```bash
     brew install minikube
     ```
 
-14. **k9s** (Kubernetes Terminal UI)
+16. **k9s** (optional; Kubernetes terminal UI)
     ```bash
     brew install k9s
     ```
 
-15. **jq** (JSON processor)
-    ```bash
-    brew install jq
-    ```
-
-16. **yq** (YAML processor)
+17. **yq** (optional; YAML processor)
     ```bash
     brew install yq
     ```
 
-17. **Vault** (HashiCorp Vault for secrets management)
+18. **Vault** (optional; secrets management experimentation)
     ```bash
     brew install vault
     ```
-
-18. **Prometheus & Grafana** (Monitoring - will be deployed via Docker)
 
 ### Optional but Recommended
 
@@ -124,6 +124,11 @@ Before starting this project, ensure you have the following installed on your ma
 ## 🏗️ Project Architecture
 
 This project implements a microservices architecture for an AEC Data Platform with the following components:
+
+**All services available as pre-built Docker images from GitHub Container Registry:**
+- `ghcr.io/temitayocharles/autodesk-project/data-ingestion-service:main`
+- `ghcr.io/temitayocharles/autodesk-project/data-processing-service:main`
+- `ghcr.io/temitayocharles/autodesk-project/data-api-service:main`
 
 ### Microservices (3 Services)
 
@@ -152,11 +157,12 @@ This project implements a microservices architecture for an AEC Data Platform wi
 - **Prometheus** (Metrics collection)
 - **Grafana** (Visualization)
 - **Loki** (Log aggregation)
-- **Jenkins** (CI/CD)
-- **HashiCorp Vault** (Secrets management)
-- **Kubernetes** (Orchestration)
+- **Kubernetes** (Orchestration via manifests)
+- **CI/CD** (GitHub Actions workflow + Jenkins/ArgoCD docs and examples)
 
 ## 📚 Learning Path & Project Phases
+
+**Note:** Phases that mention tools not present in this repo (Terraform, Ansible, Helm, Vault, etc.) are conceptual learning guidance unless you add those files yourself.
 
 ### Phase 1: Application Development (Days 1-3)
 - Build the 3 microservices
@@ -226,16 +232,22 @@ This project implements a microservices architecture for an AEC Data Platform wi
 
 ```bash
 # Clone or navigate to project directory
-cd /Users/charlie/Desktop/autodesk-project
+cd /path/to/autodesk-project
 
 # Verify all prerequisites
 ./scripts/verify-prerequisites.sh
 
+# Create env file for Docker Compose
+cd infrastructure/docker-compose
+cp .env.example .env
+# Edit .env with your AWS credentials and S3 bucket
+
 # Start the development environment
+cd /path/to/autodesk-project
 ./scripts/start-dev-environment.sh
 
-# Build all services
-./scripts/build-all.sh
+# Build locally instead of pulling images
+# USE_LOCAL_IMAGES=1 ./scripts/start-dev-environment.sh
 
 # Deploy to local Kubernetes
 ./scripts/deploy-local.sh
@@ -243,7 +255,6 @@ cd /Users/charlie/Desktop/autodesk-project
 # Access services
 # API Gateway: http://localhost:8080
 # Grafana: http://localhost:3000
-# Jenkins: http://localhost:8081
 # Prometheus: http://localhost:9090
 ```
 
@@ -252,40 +263,32 @@ cd /Users/charlie/Desktop/autodesk-project
 ```
 autodesk-project/
 ├── README.md                          # This file
+├── START-HERE.md                      # Orientation and reading order
+├── GETTING-STARTED.md                 # Quick start guide
 ├── TUTORIAL.md                        # Step-by-step tutorial
+├── PROJECT-SUMMARY.md                 # Summary and roadmap
 ├── services/                          # Microservices
-│   ├── data-ingestion-service/       # Python/FastAPI service
-│   ├── data-processing-service/      # Go service
-│   └── data-api-service/             # Python/Flask service
-├── infrastructure/                    # IaC
-│   ├── terraform/                    # Terraform configs
-│   ├── ansible/                      # Ansible playbooks
-│   └── docker-compose/               # Docker Compose files
-├── kubernetes/                        # K8s manifests
-│   ├── manifests/                    # Raw YAML files
-│   └── helm-charts/                  # Helm charts
-├── ci-cd/                            # CI/CD configs
-│   ├── jenkins/                      # Jenkinsfiles
-│   └── scripts/                      # Build scripts
-├── monitoring/                        # Observability
-│   ├── prometheus/                   # Prometheus configs
-│   ├── grafana/                      # Grafana dashboards
-│   └── loki/                         # Loki configs
-├── security/                         # Security configs
-│   ├── vault/                        # Vault policies
-│   └── policies/                     # Security policies
-├── scripts/                          # Automation scripts
+│   ├── data-ingestion-service/        # Python/FastAPI service
+│   ├── data-processing-service/       # Go service
+│   └── data-api-service/              # Python/Flask service
+├── infrastructure/
+│   └── docker-compose/                # Docker Compose files and configs
+├── kubernetes/
+│   └── manifests/                     # Kubernetes YAML manifests
+├── ci-cd/
+│   ├── argocd/                        # GitOps (ArgoCD)
+│   └── jenkins/                       # Jenkins pipeline + setup docs
+├── .github/workflows/                 # GitHub Actions CI/CD workflow
+├── scripts/                           # Automation scripts
 │   ├── verify-prerequisites.sh
 │   ├── build-all.sh
+│   ├── start-dev-environment.sh
+│   ├── test-services.sh
 │   ├── deploy-local.sh
 │   └── cleanup.sh
-├── docs/                             # Documentation
-│   ├── architecture/
-│   ├── runbooks/
-│   └── troubleshooting/
-└── tests/                            # Integration tests
-    ├── load-tests/
-    └── e2e-tests/
+└── docs/                              # Documentation
+    ├── ARCHITECTURE.md
+    └── INTERVIEW-PREP.md
 ```
 
 ## 🎓 Tutorial Mode
@@ -303,10 +306,9 @@ Follow the **TUTORIAL.md** file for step-by-step guidance through each phase of 
 This project demonstrates proficiency in:
 - ✅ Multi-language programming (Python, Go, Shell)
 - ✅ Container orchestration (Docker, Kubernetes)
-- ✅ CI/CD pipeline design (Jenkins)
-- ✅ Infrastructure as Code (Terraform, Ansible)
-- ✅ Monitoring & Observability (Prometheus, Grafana, Loki)
-- ✅ Security best practices (Vault, RBAC, Network Policies)
+- ✅ CI/CD pipeline design (Jenkins, GitHub Actions, ArgoCD)
+- ✅ Monitoring & Observability (Prometheus, Grafana, Loki via Docker Compose)
+- ✅ Security best practices (RBAC/network policies as planned)
 - ✅ Cloud integration (AWS S3)
 - ✅ Automation & scripting
 - ✅ Documentation & communication

@@ -2,6 +2,8 @@
 
 ## Today: Get It Running (2-3 hours)
 
+**Note:** Run `docker-compose` commands from `infrastructure/docker-compose` unless a different path is shown.
+
 ### ✅ Checkpoint 1: Prerequisites (30 min)
 ```bash
 cd /Users/charlie/Desktop/autodesk-project
@@ -40,15 +42,22 @@ AWS_SECRET_ACCESS_KEY=YOUR_ACTUAL_SECRET
 S3_BUCKET_NAME=your-bucket-name-from-above
 ```
 
-### ✅ Checkpoint 4: Build Everything (20 min)
+### ✅ Checkpoint 4: Pull Images and Start Platform (10 min)
 ```bash
 cd /Users/charlie/Desktop/autodesk-project
-./scripts/build-all.sh
+./scripts/start-dev-environment.sh
 ```
 
-**Expected:** See "✅" for each service built
+**What's happening:**
+- Pulling pre-built Docker images from GitHub Container Registry
+- Images are at: `ghcr.io/temitayocharles/autodesk-project/*:main`
+- Built automatically by GitHub Actions CI/CD
 
-### ✅ Checkpoint 5: Start Platform (15 min)
+**Want to build locally?** Run `./scripts/build-all.sh` first (takes 15-20 min)
+
+**Expected:** See services pulling and starting
+
+### ✅ Checkpoint 5: Verify Platform (5 min)
 ```bash
 ./scripts/start-dev-environment.sh
 ```

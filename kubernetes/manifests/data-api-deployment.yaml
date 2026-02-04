@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: data-api-service
-        image: data-api-service:latest
+        image: ghcr.io/temitayocharles/autodesk-project/data-api-service:main
         imagePullPolicy: IfNotPresent
         ports:
         - containerPort: 8002
