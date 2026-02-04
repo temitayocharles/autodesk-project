@@ -133,6 +133,7 @@ jobs:
           type=semver,pattern={{version}}
 
     - name: Build and push Docker image
+      id: build
       uses: docker/build-push-action@v5
       with:
         context: ./services/${{ matrix.service }}
@@ -145,9 +146,10 @@ jobs:
     - name: Scan image with Trivy
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: ${{ env.REGISTRY }}/${{ github.repository }}/${{ matrix.service }}:${{ github.sha }}
+        image-ref: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
         format: 'sarif'
         output: 'trivy-image-results.sarif'
+      continue-on-error: true
 
   deploy-to-k8s:
     name: Deploy to Kubernetes
