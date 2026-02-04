@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aec-config
+  namespace: aec-data
+data:
+  DATABASE_URL: "postgresql://postgres:postgres@postgres:5432/aec_data"
+  REDIS_URL: "redis://redis:6379/0"
+  RABBITMQ_URL: "amqp://guest:guest@rabbitmq:5672/"
+  CACHE_TTL: "300"
+  QUEUE_NAME: "aec-data-processing"
+  AWS_REGION: "us-west-2"

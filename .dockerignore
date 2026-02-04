@@ -1,0 +1,167 @@
+# Git
+.git/
+.gitignore
+.gitattributes
+.github/
+
+# Documentation
+README.md
+TUTORIAL.md
+GETTING-STARTED.md
+START-HERE.md
+PROJECT-SUMMARY.md
+INTERVIEW-PREP.md
+7-DAY-PLAN.md
+WHATS-NEW.md
+docs/
+*.md
+
+# CI/CD (not needed in images)
+.github/
+ci-cd/
+.jenkins/
+Jenkinsfile
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+*.egg-info/
+.installed.cfg
+*.egg
+pip-log.txt
+.tox/
+.coverage
+.pytest_cache/
+.mypy_cache/
+htmlcov/
+
+# Virtual environments (use requirements.txt instead)
+venv/
+env/
+ENV/
+.venv/
+
+# Go
+*.exe
+*.exe~
+*.test
+*.out
+vendor/
+
+# Node
+node_modules/
+npm-debug.log*
+yarn-error.log*
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment files (use secrets management)
+.env
+.env.*
+*.env
+
+# Testing
+test/
+tests/
+*_test.go
+*_test.py
+*.test
+test_*.py
+
+# Kubernetes (not needed in image)
+kubernetes/
+helm-charts/
+
+# Infrastructure (not needed in image)
+infrastructure/
+terraform/
+ansible/
+
+# Monitoring configs (not needed in image)
+monitoring/
+prometheus/
+grafana/
+
+# Security (not needed in image)
+security/
+
+# Scripts (not needed in image)
+scripts/
+
+# Other services (each service only needs its own code)
+services/*/
+!services/data-ingestion-service/
+!services/data-processing-service/
+!services/data-api-service/
+
+# Docker files from other services
+**/Dockerfile
+!Dockerfile
+**/docker-compose*.yml
+
+# Logs
+*.log
+logs/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Database files
+*.db
+*.sqlite
+
+# Build artifacts (build fresh in container)
+bin/
+target/
+dist/
+
+# Git history and hooks
+.git/
+.gitignore
+
+# Large media files
+*.mp4
+*.avi
+*.mov
+*.zip
+*.tar.gz
+*.iso
+
+# Cache
+.cache/
+*.cache
+
+# Secrets
+*.pem
+*.key
+secrets/
+
+# Coverage reports
+coverage/
+.coverage
+
+# Backup files
+*.backup
+*.old

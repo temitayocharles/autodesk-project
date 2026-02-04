@@ -1,0 +1,52 @@
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+bin/
+vendor/
+
+# Go build cache
+go-build/
+
+# Testing
+*_test.go
+test/
+tests/
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment files
+.env
+.env.*
+
+# Documentation
+README.md
+*.md
+docs/
+
+# Git
+.git/
+.gitignore
+.dockerignore
+Dockerfile.dev
+
+# Logs
+*.log
+logs/
+
+# Temporary
+tmp/
+*.tmp
+*.bak
