@@ -1,5 +1,22 @@
 # AEC Data Infrastructure DevOps Project
 
+
+## Start Here
+- Read [START_HERE.md](START_HERE.md) for the chronological playbook.
+
+
+## Documentation Index
+- [7-DAY-PLAN.md](7-DAY-PLAN.md)
+- [GETTING-STARTED.md](GETTING-STARTED.md)
+- [PROJECT-SUMMARY.md](PROJECT-SUMMARY.md)
+- [START-HERE.md](START-HERE.md)
+- [TUTORIAL.md](TUTORIAL.md)
+- [WHATS-NEW.md](WHATS-NEW.md)
+- [ci-cd/argocd/ARGOCD-GUIDE.md](ci-cd/argocd/ARGOCD-GUIDE.md)
+- [ci-cd/jenkins/SETUP.md](ci-cd/jenkins/SETUP.md)
+- [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md)
+- [docs/INTERVIEW-PREP.md](docs/INTERVIEW-PREP.md)
+
 ## 🎯 Project Overview
 
 This enterprise-grade project simulates the Architecture, Engineering, and Construction (AEC) Data Infrastructure at Autodesk. You'll build a complete DevOps ecosystem including microservices, CI/CD pipelines, containerization, orchestration, monitoring, and infrastructure automation.
