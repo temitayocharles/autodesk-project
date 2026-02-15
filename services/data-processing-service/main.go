@@ -23,6 +23,7 @@ type Config struct {
 	WorkerCount      int
 	MetricsPort      string
 	HealthCheckPort  string
+	DisableRabbitMQ  bool
 }
 
 // FileProcessingMessage represents a file to be processed
@@ -72,40 +73,58 @@ func main() {
 	config := loadConfig()
 
 	// Connect to RabbitMQ
-	conn, err := connectRabbitMQ(config.RabbitMQURL)
-	if err != nil {
-		log.Fatalf("Failed to connect to RabbitMQ: %v", err)
-	}
-	defer conn.Close()
+	var msgs <-chan amqp.Delivery
+	var conn *amqp.Connection
+	var ch *amqp.Channel
+	if config.DisableRabbitMQ {
+		log.Warn("RABBITMQ disabled; running health/metrics only")
+	} else {
+		var err error
+		conn, err = connectRabbitMQ(config.RabbitMQURL)
+		if err != nil {
+			log.Fatalf("Failed to connect to RabbitMQ: %v", err)
+		}
+		defer conn.Close()
 
-	// Create channel
-	ch, err := conn.Channel()
-	if err != nil {
-		log.Fatalf("Failed to create channel: %v", err)
-	}
-	defer ch.Close()
+		ch, err = conn.Channel()
+		if err != nil {
+			log.Fatalf("Failed to create channel: %v", err)
+		}
+		defer ch.Close()
 
-	// Declare queue
-	q, err := ch.QueueDeclare(
-		config.QueueName, // name
-		true,             // durable
-		false,            // delete when unused
-		false,            // exclusive
-		false,            // no-wait
-		nil,              // arguments
-	)
-	if err != nil {
-		log.Fatalf("Failed to declare queue: %v", err)
-	}
+		q, err := ch.QueueDeclare(
+			config.QueueName, // name
+			true,             // durable
+			false,            // delete when unused
+			false,            // exclusive
+			false,            // no-wait
+			nil,              // arguments
+		)
+		if err != nil {
+			log.Fatalf("Failed to declare queue: %v", err)
+		}
 
-	// Set QoS
-	err = ch.Qos(
-		1,     // prefetch count
-		0,     // prefetch size
-		false, // global
-	)
-	if err != nil {
-		log.Fatalf("Failed to set QoS: %v", err)
+		err = ch.Qos(
+			1,     // prefetch count
+			0,     // prefetch size
+			false, // global
+		)
+		if err != nil {
+			log.Fatalf("Failed to set QoS: %v", err)
+		}
+
+		msgs, err = ch.Consume(
+			q.Name, // queue
+			"",     // consumer
+			false,  // auto-ack
+			false,  // exclusive
+			false,  // no-local
+			false,  // no-wait
+			nil,    // args
+		)
+		if err != nil {
+			log.Fatalf("Failed to register consumer: %v", err)
+		}
 	}
 
 	// Start metrics server
@@ -114,30 +133,18 @@ func main() {
 	// Start health check server
 	go startHealthCheckServer(config.HealthCheckPort)
 
-	// Start worker pool
-	msgs, err := ch.Consume(
-		q.Name, // queue
-		"",     // consumer
-		false,  // auto-ack
-		false,  // exclusive
-		false,  // no-local
-		false,  // no-wait
-		nil,    // args
-	)
-	if err != nil {
-		log.Fatalf("Failed to register consumer: %v", err)
-	}
-
 	// Create context for graceful shutdown
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	// Start workers
-	for i := 0; i < config.WorkerCount; i++ {
-		go worker(ctx, i, msgs)
+	if config.DisableRabbitMQ {
+		log.Info("RabbitMQ disabled: not starting workers")
+	} else {
+		for i := 0; i < config.WorkerCount; i++ {
+			go worker(ctx, i, msgs)
+		}
+		log.Infof("Started %d workers, waiting for messages...", config.WorkerCount)
 	}
-
-	log.Infof("Started %d workers, waiting for messages...", config.WorkerCount)
 
 	// Wait for interrupt signal
 	sigChan := make(chan os.Signal, 1)
@@ -157,6 +164,7 @@ func loadConfig() *Config {
 		WorkerCount:     5,
 		MetricsPort:     getEnv("METRICS_PORT", "9091"),
 		HealthCheckPort: getEnv("HEALTH_PORT", "8081"),
+		DisableRabbitMQ: getEnv("DISABLE_RABBITMQ", "0") == "1",
 	}
 }
 
