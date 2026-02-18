@@ -33,7 +33,7 @@ jobs:
 
   build-push:
     needs: [test-python, test-go]
-    if: github.ref == 'refs/heads/main'
+    if: github.event_name == 'workflow_dispatch'
     permissions:
       contents: read
       packages: write
