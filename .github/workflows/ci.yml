@@ -22,7 +22,7 @@ jobs:
       python-version: "3.11"
       working-directory: ${{ matrix.svc.dir }}
       requirements-file: requirements.txt
-      test-cmd: pytest -q
+      test-cmd: PYTHONPATH=. pytest -q
 
   test-go:
     uses: temitayocharles/shared-workflows/.github/workflows/tests-go.yml@main
