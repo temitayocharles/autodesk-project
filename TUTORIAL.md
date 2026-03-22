@@ -91,7 +91,8 @@ aws s3 mb s3://aec-data-local-$(date +%s)
 This repo already contains the working structure. Verify it looks like this:
 
 ```bash
-cd /Users/charlie/Desktop/autodesk-project
+WORKSPACE_ROOT="${WORKSPACE_ROOT:-/Volumes/512-B/Documents/PERSONAL}"
+cd "$WORKSPACE_ROOT/workloads/autodesk-project"
 ls
 ```
 

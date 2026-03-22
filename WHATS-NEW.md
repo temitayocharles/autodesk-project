@@ -168,7 +168,8 @@ git push origin main
 ### Use Pre-built Images (2 minutes)
 ```bash
 # All images are now pulled from GitHub Container Registry
-cd /Users/charlie/Desktop/autodesk-project
+WORKSPACE_ROOT="${WORKSPACE_ROOT:-/Volumes/512-B/Documents/PERSONAL}"
+cd "$WORKSPACE_ROOT/workloads/autodesk-project"
 ./scripts/start-dev-environment.sh
 
 # No local build needed! Images are pre-built by CI/CD

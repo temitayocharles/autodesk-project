@@ -6,7 +6,8 @@
 
 ### ✅ Checkpoint 1: Prerequisites (30 min)
 ```bash
-cd /Users/charlie/Desktop/autodesk-project
+WORKSPACE_ROOT="${WORKSPACE_ROOT:-/Volumes/512-B/Documents/PERSONAL}"
+cd "$WORKSPACE_ROOT/workloads/autodesk-project"
 ./scripts/verify-prerequisites.sh
 ```
 
@@ -44,7 +45,8 @@ S3_BUCKET_NAME=your-bucket-name-from-above
 
 ### ✅ Checkpoint 4: Pull Images and Start Platform (10 min)
 ```bash
-cd /Users/charlie/Desktop/autodesk-project
+WORKSPACE_ROOT="${WORKSPACE_ROOT:-/Volumes/512-B/Documents/PERSONAL}"
+cd "$WORKSPACE_ROOT/workloads/autodesk-project"
 ./scripts/start-dev-environment.sh
 ```
 
@@ -631,7 +633,8 @@ Create a simple slide deck:
 ### Daily Operations:
 ```bash
 # Start everything
-cd /Users/charlie/Desktop/autodesk-project
+WORKSPACE_ROOT="${WORKSPACE_ROOT:-/Volumes/512-B/Documents/PERSONAL}"
+cd "$WORKSPACE_ROOT/workloads/autodesk-project"
 ./scripts/start-dev-environment.sh
 
 # Check status
